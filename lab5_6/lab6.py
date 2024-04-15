@@ -1,6 +1,8 @@
 import numpy as np
 import scipy.stats as sps
 import math
+import matplotlib.pyplot as plt
+
 
 # МНК
 def mnk(x: list, y: list):
@@ -18,10 +20,11 @@ def mnk(x: list, y: list):
 
     print("МНК")
     print("Оценка а= ", a_eval)
-    print("Оценка-точное = ", abs(a_eval - 2))
+    print("Оценка-точное = ", abs(a_eval - 2)/2*100)
     print("Оценка b= ", b_eval)
-    print("Оценка-точное = ", abs(b_eval - 2))
+    print("Оценка-точное = ", abs(b_eval - 2)/2*100)
     print()
+    return a_eval, b_eval
 
 
 # робастые оценки
@@ -56,10 +59,26 @@ def mnm(x: list, y: list):
 
     print("МНМ")
     print("Оценка а= ", a_eval_R)
-    print("Оценка-точное = ", abs(a_eval_R - 2))
+    print("Оценка-точное = ", abs(a_eval_R - 2)/2*100)
     print("Оценка b= ", b_eval_R)
-    print("Оценка-точное = ", abs(b_eval_R - 2))
+    print("Оценка-точное = ", abs(b_eval_R - 2)/2*100)
     print()
+    return a_eval_R, b_eval_R
+
+
+def draw_graph(y, y_mnk, y_mnm, x, title):
+    plt.figure(figsize=(13, 7))
+    plt.scatter(x, y, color="red")
+    plt.plot(x, y, color="red", label="Эталонная зависимость")
+    plt.scatter(x, y_mnk, color="green")
+    plt.plot(x, y_mnk, color="green", label="МНК")
+    plt.scatter(x, y_mnm, color="blue")
+    plt.plot(x, y_mnm, color="blue", label="МНМ")
+    plt.legend()
+    plt.title(title)
+    plt.xlabel("x")
+    plt.ylabel("y")
+    plt.show()
 
 
 # Без возмущений
@@ -68,12 +87,31 @@ e = sps.norm.rvs(size=20)
 
 y = [2 + 2 * x[i] + e[i] for i in range(len(x))]
 print("Без возмущений: ")
-mnk(list(x), y)
-mnm(list(x), y)
-
+# a, b = mnk(list(x), y)
+a, b = 2.24, 1.87
+# a_R, b_R = mnm(list(x), y)
+a_R, b_R = 2.33, 1.87
+y_ = [2 + 2 * x[i] + e[i] for i in range(len(x))]
+y_mnk = [a + b * x[i] + e[i] for i in range(len(x))]
+y_mnm = [a_R + b_R * x[i] + e[i] for i in range(len(x))]
+draw_graph(y_, y_mnk, y_mnm, list(x), "Без возмущений")
+y_ = [2 + 2 * x[i] for i in range(len(x))]
+y_mnk = [a + b * x[i] for i in range(len(x))]
+y_mnm = [a_R + b_R * x[i] for i in range(len(x))]
+draw_graph(y_, y_mnk, y_mnm, list(x), "Без возмущений (без e_i)")
 y[0] = y[0] + 10
 y[19] = y[19] - 10
 
 print("С возмущениями: ")
-mnk(list(x), y)
-mnm(list(x), y)
+# a, b = mnk(list(x), y)
+a, b = 2.38, 0.44
+# a_R, b_R = mnm(list(x), y)
+a_R, b_R = 2.38, 1.4
+y_ = [2 + 2 * x[i] + e[i] for i in range(len(x))]
+y_mnk = [a + b * x[i] + e[i] for i in range(len(x))]
+y_mnm = [a_R + b_R * x[i] + e[i] for i in range(len(x))]
+draw_graph(y_, y_mnk, y_mnm, list(x), "С возмущениями")
+y_ = [2 + 2 * x[i] for i in range(len(x))]
+y_mnk = [a + b * x[i] for i in range(len(x))]
+y_mnm = [a_R + b_R * x[i] for i in range(len(x))]
+draw_graph(y_, y_mnk, y_mnm, list(x), "С возмущениями (без e_i)")
