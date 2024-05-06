@@ -2,6 +2,7 @@ import math
 import statistics as st
 import scipy.stats as sps
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 class hypothesis_testing_F:
@@ -13,6 +14,16 @@ class hypothesis_testing_F:
 
         x_sample = np.random.choice(self.distribution, size=m, replace=False)
         y_sample = np.random.choice(self.distribution, size=n, replace=False)
+        plt.figure(figsize=(13, 7))
+        plt.hist(self.distribution, label='Гистограмма генеральной совокупности N=100', alpha=0.4, color='green',
+                 edgecolor='green')
+        plt.hist(y_sample, label=f'Гистограмма выборки 2 n={n}', alpha=0.4, color='yellow', edgecolor='yellow')
+        plt.hist(x_sample, label=f'Гистограмма выборки 1 m={m}', alpha=0.4, color='red', edgecolor='red')
+        plt.legend()
+        plt.xlabel('Нормально распределёные числа')
+        plt.ylabel('Количество чисел содержащихся в бине')
+        plt.show()
+
         np.random.set_state(state)
 
         avg_x = np.mean(x_sample)
